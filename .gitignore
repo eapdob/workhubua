@@ -13,3 +13,5 @@
 
 /redis
 /postgres
+
+/.composer.lock
