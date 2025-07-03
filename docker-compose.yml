@@ -26,7 +26,7 @@ services:
       - '80:80'
       - '443:443'
     volumes:
-      - '.${DIR_APP}:/var/www/html'
+      - '.${DIR_APP}:/application'
       - '.${NGINX_CONF}:/etc/nginx/conf.d/default.conf'
     depends_on:
       - php-fpm
@@ -37,13 +37,13 @@ services:
     image: postgres
     container_name: workhubua_postgres
     environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - DATABASE_DB=${DATABASE_DB}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
     ports:
       - '5432:5432'
     volumes:
-      - '.${DB_VOLUME}:/var/lib/postgresql/data'
+      - '.${DATABASE_VOLUME}:/var/lib/postgresql/data'
     networks:
       - workhubua
 
@@ -54,6 +54,18 @@ services:
       - '6379:6379'
     volumes:
       - '.${REDIS_VOLUME}:/data'
+    networks:
+      - workhubua
+
+  mailer:
+    image: axllent/mailpit
+    container_name: workhubua_mailer
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
     networks:
       - workhubua
 
