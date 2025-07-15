@@ -25,3 +25,7 @@
 ###< phpunit/phpunit ###
 
 /public/--adminer.php
+
+/.env
+/.env.dev
+/.env.prod
