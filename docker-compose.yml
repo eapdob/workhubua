@@ -27,7 +27,7 @@ services:
       - '.${DIR_APP}:/application'
       - '.${NGINX_CONF}:/etc/nginx/conf.d/default.conf'
       - '.${NGINX_CERTIFICATES}:/certificates'
-      - '.${NGINX_LOG}:/var/log/'
+      - '.${NGINX_LOG}:/var/log/nginx'
     depends_on:
       - php-fpm
     networks:
