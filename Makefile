@@ -15,6 +15,9 @@ docker_logs:
 docker_fix_permissions:
 	sudo chown -R $$(id -u):$$(id -g) docker/volumes
 
+docker_fix_permissions_certificates:
+	sudo chown -R $$(id -u):$$(id -g) docker/etc/dev/php-fpm/certificates
+
 docker_certs:
 	mkdir -p docker/volumes/nginx/certificates && \
 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
