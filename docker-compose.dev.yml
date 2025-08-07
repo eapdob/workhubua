@@ -1,0 +1,74 @@
+services:
+  php-fpm:
+    build:
+      context: ./docker/etc/dev/php-fpm
+      dockerfile: Dockerfile
+      args:
+        CURRENT_USER: '${CURRENT_USER}'
+        CURRENT_GROUP: '${CURRENT_GROUP}'
+        DIR_BASE: '${DIR_BASE}'
+    container_name: workhubua_php-fpm
+    volumes:
+      - '.${DIR_APP}:${DIR_BASE}'
+      - '.${PHP_DEV_CONF}:/usr/local/etc/php/conf.d/php.ini'
+      - '.${PHP_CERTIFICATES}:/certificates'
+    depends_on:
+      - postgres
+    networks:
+      - workhubua
+
+  nginx:
+    image: nginx
+    container_name: workhubua_nginx
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - '.${DIR_APP}:/application'
+      - '.${NGINX_CONF}:/etc/nginx/conf.d/default.conf'
+      - '.${NGINX_CERTIFICATES}:/certificates'
+      - '.${NGINX_LOG}:/var/log/nginx'
+    depends_on:
+      - php-fpm
+    networks:
+      - workhubua
+
+  postgres:
+    image: postgres
+    container_name: workhubua_postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - '5432:5432'
+    volumes:
+      - '.${POSTGRES_VOLUME}:/var/lib/postgresql/data'
+    networks:
+      - workhubua
+
+  redis:
+    image: redis
+    container_name: workhubua_redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - '.${REDIS_VOLUME}:/data'
+    networks:
+      - workhubua
+
+  mailer:
+    image: axllent/mailpit
+    container_name: workhubua_mailer
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    networks:
+      - workhubua
+
+networks:
+  workhubua:
+    name: workhubua
