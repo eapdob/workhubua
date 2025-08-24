@@ -24,7 +24,7 @@ RUN set -eux; \
     libicu-dev \
     gettext \
     cron \
-    libpcre3-dev \
+    libpcre2-dev \
     bash \
     coreutils \
     && rm -rf /var/lib/apt/lists/*
